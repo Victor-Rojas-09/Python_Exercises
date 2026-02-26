@@ -18,6 +18,8 @@ from Exercises.E12 import Ejercicio12
 from Exercises.E13 import Ejercicio13
 from Exercises.E14 import Ejercicio14
 
+# Funciones generales 
+
 def cargar_imagen(ruta):
     img = Image.open(ruta).convert("RGB")
     img = np.asarray(img, dtype=np.float32) / 255.0
@@ -31,7 +33,7 @@ def mostrar_imagen(img, titulo="Resultado"):
     plt.show()
 
 
-
+# Menu de pruebas
 def menu():
     print("\n-Opciones")
     print("01. Matriz de colores")
@@ -85,9 +87,9 @@ while True:
         mostrar_imagen(resultado, f"Ejercicio {opcion}")
 
     elif opcion == "10":
-        r = cargar_imagen(input("Nombre imagen canal R: "))
-        g = cargar_imagen(input("Nombre imagen canal G: "))
-        b = cargar_imagen(input("Nombre imagen canal B: "))
+        r = cargar_imagen(input("Ruta imagen canal R: "))
+        g = cargar_imagen(input("Ruta imagen canal G: "))
+        b = cargar_imagen(input("Ruta imagen canal B: "))
 
         resultado = Ejercicio10().ejecutar(r, g, b)
         mostrar_imagen(resultado, "Reconstrucción RGB")
@@ -100,4 +102,5 @@ while True:
         mostrar_imagen(resultado, "Fusión de imágenes")
 
     else:
+
         print("Opción inválida. Intente nuevamente.")
