@@ -4,8 +4,7 @@ Algoritmo Stepping Stone
 
 import numpy as np
 from itertools import product
-from data.transport_problem import TransportProblem
-from utils.cost_functions import total_cost
+from Transport_Problem.data.transport_problem import TransportProblem
 
 class SteppingStone:
     """
@@ -20,21 +19,21 @@ class SteppingStone:
             Solución inicial factible.
         problem : TransportProblem
             Instancia del problema de transporte.
-
-        Returns
-        -------
-        tuple
-            (solución óptima, historial de iteraciones)
         """
         rows, cols = problem.costs.shape
         allocation = initial_solution.copy().astype(float)
         history = []
 
         for iteration in range(1, 100):
-            current_cost = total_cost(allocation, problem.costs)
+            # Usamos el metodo de TransportProblem correctamente
+            current_cost = problem.total_cost(allocation)
             reduced_costs = self.compute_reduced_costs(allocation, problem.costs)
 
-            history.append({'iteration': iteration, 'cost': current_cost, 'allocation': allocation.copy()})
+            history.append({
+                'iteration': iteration,
+                'cost': current_cost,
+                'allocation': allocation.copy()
+            })
 
             # Si no hay costos reducidos negativos, alcanzamos la solución óptima
             negatives = {k: v for k, v in reduced_costs.items() if v < -1e-9}
@@ -77,12 +76,13 @@ class SteppingStone:
             cycle = self.find_cycle(allocation, (row, column), rows, cols)
             if cycle is None:
                 continue
-            delta = sum(costs[r, c] * (1 if k % 2 == 0 else -1) for k, (r, c) in enumerate(cycle))
+            delta = sum(costs[r, c] * (1 if k % 2 == 0 else -1)
+                        for k, (r, c) in enumerate(cycle))
             reduced[(row, column)] = round(delta, 8)
 
         return reduced
 
-    def find_cycle(self, allocation: np.ndarray, start, rows, cols):
+    def find_cycle(self, allocation: np.ndarray, start, rows: int, cols: int):
         """
         Encuentra un ciclo cerrado que pasa por la celda entrante.
         """

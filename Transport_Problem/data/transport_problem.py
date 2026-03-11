@@ -1,21 +1,8 @@
-"""
-Clase TransportProblem y función total_cost
-"""
-
 import numpy as np
 
 class TransportProblem:
     """
     Clase que modela un problema clásico de transporte.
-    
-    Parameters
-    ----------
-    costs : np.ndarray
-        Matriz de costos de transporte.
-    supply : np.ndarray
-        Vector de oferta.
-    demand : np.ndarray
-        Vector de demanda.
     """
 
     def __init__(self, costs: np.ndarray, supply: np.ndarray, demand: np.ndarray):
@@ -26,11 +13,6 @@ class TransportProblem:
     def is_balanced(self) -> bool:
         """
         Verifica si el problema está balanceado.
-        
-        Returns
-        -------
-        bool
-            True si oferta = demanda, False en caso contrario.
         """
         return np.isclose(self.supply.sum(), self.demand.sum())
 
@@ -53,24 +35,8 @@ class TransportProblem:
             self.supply = np.append(self.supply, diff)
             self.costs = np.vstack([self.costs, np.zeros((1, self.costs.shape[1]))])
 
-
-# ──────────────────────────────────────────────────────────
-# Función auxiliar: costo total
-# ──────────────────────────────────────────────────────────
-def total_cost(allocation: np.ndarray, costs: np.ndarray) -> float:
-    """
-    Calcula el costo total de una asignación.
-
-    Parameters
-    ----------
-    allocation : np.ndarray
-        Matriz de asignación.
-    costs : np.ndarray
-        Matriz de costos.
-
-    Returns
-    -------
-    float
-        Costo total de la asignación.
-    """
-    return float((allocation * costs).sum())
+    def total_cost(self, allocation: np.ndarray) -> float:
+        """
+        Calcula el costo total de una asignación.
+        """
+        return float((allocation * self.costs).sum())

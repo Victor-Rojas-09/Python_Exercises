@@ -4,14 +4,15 @@ Clase para la Visualización de resultados
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from utils.cost_functions import total_cost
+import numpy as np
+from Transport_Problem.data.transport_problem import TransportProblem
 
 class TransportVisualizer:
     """
     Clase para visualizar resultados del problema de transporte.
     """
 
-    def show_assignment(self, allocation, costs, title="Asignación"):
+    def show_assignment(self, allocation: np.ndarray, problem: TransportProblem, title: str = "Asignación") -> None:
         """
         Muestra la matriz de asignación como tabla.
 
@@ -19,8 +20,8 @@ class TransportVisualizer:
         ----------
         allocation : np.ndarray
             Matriz de asignación.
-        costs : np.ndarray
-            Matriz de costos.
+        problem : TransportProblem
+            Instancia del problema de transporte.
         title : str
             Título de la tabla.
         """
@@ -30,17 +31,18 @@ class TransportVisualizer:
             index=[f"Origen {r+1}" for r in range(rows)],
             columns=[f"Destino {c+1}" for c in range(cols)]
         )
+
         print(f"\n{title}")
         print(df.to_string())
-        print(f" → Costo total = {total_cost(allocation, costs):.2f}")
+        print(f" → Costo total = {problem.total_cost(allocation):.2f}")
 
-    def plot_convergence(self, history):
+    def plot_convergence(self, history: list[dict]) -> None:
         """
         Grafica la evolución del costo total en cada iteración.
 
         Parameters
         ----------
-        history : list[dict]
+        history : list of dict
             Historial de iteraciones con costo y asignación.
         """
         iterations = [h['iteration'] for h in history]
@@ -58,7 +60,7 @@ class TransportVisualizer:
         plt.tight_layout()
         plt.show()
 
-    def compare_solutions(self, initial, optimal, costs):
+    def compare_solutions(self, initial: np.ndarray, optimal: np.ndarray, problem: TransportProblem) -> None:
         """
         Compara gráficamente la solución inicial y la óptima.
 
@@ -68,17 +70,17 @@ class TransportVisualizer:
             Solución inicial.
         optimal : np.ndarray
             Solución óptima.
-        costs : np.ndarray
-            Matriz de costos.
+        problem : TransportProblem
+            Instancia del problema de transporte.
         """
-        rows, cols = costs.shape
+        rows, cols = problem.costs.shape
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         for ax, allocation, title in zip(
             axes,
             [initial, optimal],
-            [f"Inicial (NW)\nCosto = {total_cost(initial, costs):.0f}",
-             f"Óptima (Stepping Stone)\nCosto = {total_cost(optimal, costs):.0f}"]
+            [f"Inicial (NW)\nCosto = {problem.total_cost(initial):.0f}",
+             f"Óptima (Stepping Stone)\nCosto = {problem.total_cost(optimal):.0f}"]
         ):
             ax.imshow(allocation, cmap='Blues', aspect='auto', vmin=0)
             ax.set_title(title, fontsize=11, fontweight='bold')
@@ -91,7 +93,7 @@ class TransportVisualizer:
             for row in range(rows):
                 for column in range(cols):
                     val = int(allocation[row, column])
-                    cost = int(costs[row, column])
+                    cost = int(problem.costs[row, column])  # corregido
                     text = f"{val}\n(c={cost})"
                     color = 'white' if val > 60 else 'black'
                     weight = 'bold' if val > 0 else 'normal'

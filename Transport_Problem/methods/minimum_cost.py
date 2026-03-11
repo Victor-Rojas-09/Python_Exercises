@@ -3,7 +3,7 @@ Método de Costo Mínimo
 """
 
 import numpy as np
-from data.transport_problem import TransportProblem
+from Transport_Problem.data.transport_problem import TransportProblem
 
 class MinimumCostMethod:
     """
