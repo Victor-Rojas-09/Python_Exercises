@@ -1,8 +1,6 @@
 import numpy as np
 
 
-import numpy as np
-
 class Ejercicio11:
     def ejecutar(self, img1, img2):
         #Fusion
