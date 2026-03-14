@@ -16,8 +16,8 @@ class RGBReconstructor:
 
         img = np.zeros((h, w, 3), dtype=r.dtype)
 
-        img[:, :, 0] = r[:, :, 0]
+        img[:, :, 2] = r[:, :, 2]
         img[:, :, 1] = g[:, :, 1]
-        img[:, :, 2] = b[:, :, 2]
+        img[:, :, 0] = b[:, :, 0]
 
         return img
