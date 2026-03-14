@@ -11,7 +11,7 @@ from Image_Manager.color.channels import (
     CyanChannel,
     YellowChannel
 )
-
+from Image_Manager.color.histogram import Histogram
 from Image_Manager.color.reconstruction import RGBReconstructor
 from Image_Manager.color.adjustments import BrightnessAdjust, ChannelAdjust
 from Image_Manager.color.grayscale import (
@@ -82,6 +82,15 @@ def main():
     reconstructed = reconstructor.apply(red, green, blue)
     show("RGB Reconstruction", reconstructed)
 
+    # Histograma del canal Rojo
+    red_histogram = Histogram()
+    red_histogram.applyRed(img1)
+    # Histograma del canal Verde
+    green_histogram = Histogram()
+    green_histogram.applyGreen(img1)
+    # Histograma del canal Azul
+    blue_histogram = Histogram()
+    blue_histogram.applyBlue(img1)
 
     # Ajuste de brillo
     brightness = BrightnessAdjust()
@@ -146,16 +155,17 @@ def main():
     binary = binarizer.apply(img1, 120)
     show("Binarization", binary)
 
-
     # Segmentación HSV
     segmenter = HSVColorSegmenter("../data/IMG01.jpg")
 
-    mask = segmenter.create_mask((0, 120, 70), (10, 255, 255))
+    # Valores para segmentar una mascara amarilla
+    lower_yellow = (10, 110, 80)
+    upper_yellow = (30, 255, 255)
+    mask = segmenter.create_mask(lower_yellow, upper_yellow)
     segmented = segmenter.apply_mask(mask)
 
     show("HSV Mask", mask)
     show("HSV Segmentation", segmented)
-
 
 
     plt.show()
