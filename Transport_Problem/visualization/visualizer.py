@@ -34,7 +34,7 @@ class TransportVisualizer:
 
         print(f"\n{title}")
         print(df.to_string())
-        print(f" → Costo total = {problem.total_cost(allocation):.2f}")
+        print(f" Costo total = {problem.total_cost(allocation):.2f}")
 
     def plot_convergence(self, history: list[dict]) -> None:
         """
@@ -93,7 +93,7 @@ class TransportVisualizer:
             for row in range(rows):
                 for column in range(cols):
                     val = int(allocation[row, column])
-                    cost = int(problem.costs[row, column])  # corregido
+                    cost = int(problem.costs[row, column])
                     text = f"{val}\n(c={cost})"
                     color = 'white' if val > 60 else 'black'
                     weight = 'bold' if val > 0 else 'normal'
