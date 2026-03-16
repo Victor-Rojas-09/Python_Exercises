@@ -26,6 +26,16 @@ from Image_Manager.transform.scaling import ImageReduction, ImageAmplification
 from Image_Manager.transform.crop import ImageCrop
 from Image_Manager.transform.blend import ImageBlendAverage
 
+from Image_Manager.filters.border_detector import (
+    RobertsEdge,
+    CannyEdge,
+    PrewittEdge,
+    LaplacianEdge,
+    SobelXEdge,
+    SobelYEdge,
+    SobelMagnitude
+)
+
 from Image_Manager.segmentation.threshold import ImageBinarization
 from Image_Manager.segmentation.hsv_segmenter import HSVColorSegmenter
 
@@ -154,6 +164,23 @@ def main():
     binarizer = ImageBinarization()
     binary = binarizer.apply(img1, 120)
     show("Binarization", binary)
+
+    # Bordes
+    roberts = RobertsEdge().apply(img1)
+    sobelx = SobelXEdge().apply(img1)
+    sobely = SobelYEdge().apply(img1)
+    sobel_mag = SobelMagnitude().apply(img1)
+    prewitt = PrewittEdge().apply(img1)
+    lap = LaplacianEdge().apply(img1)
+    canny = CannyEdge().apply(img1)
+
+    show("Roberts", roberts)
+    show("Sobel X", sobelx)
+    show("Sobel Y", sobely)
+    show("Sobel Magnitude", sobel_mag)
+    show("Prewitt", prewitt)
+    show("Laplacian", lap)
+    show("Canny", canny)
 
     # Segmentación HSV
     segmenter = HSVColorSegmenter("../data/IMG01.jpg")
