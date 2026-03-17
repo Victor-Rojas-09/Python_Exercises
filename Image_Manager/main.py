@@ -37,7 +37,10 @@ from Image_Manager.filters.border_detector import (
 )
 
 from Image_Manager.segmentation.threshold import ImageBinarization
-from Image_Manager.segmentation.hsv_segmenter import HSVColorSegmenter
+from Image_Manager.segmentation.hsv_segmenter import (
+    HSVColorMask,
+    ApplyMask
+)
 
 
 def show(title, img):
@@ -182,17 +185,21 @@ def main():
     show("Laplacian", lap)
     show("Canny", canny)
 
-    # Segmentación HSV
-    segmenter = HSVColorSegmenter("../data/IMG01.jpg")
+    # Crear mascara HSV
+    masker = HSVColorMask()
 
     # Valores para segmentar una mascara amarilla
     lower_yellow = (10, 110, 80)
     upper_yellow = (30, 255, 255)
-    mask = segmenter.create_mask(lower_yellow, upper_yellow)
-    segmented = segmenter.apply_mask(mask)
+    mask = masker.apply(img1, lower_yellow, upper_yellow)
 
-    show("HSV Mask", mask)
-    show("HSV Segmentation", segmented)
+    show("Mask", mask)
+
+    # Aplicar mascara
+    applier = ApplyMask()
+    segmented = applier.apply(img1, mask)
+
+    show("Segmented Image", segmented)
 
 
     plt.show()

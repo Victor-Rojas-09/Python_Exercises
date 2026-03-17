@@ -2,41 +2,28 @@ import cv2
 import numpy as np
 
 
-class HSVColorSegmenter:
+class HSVColorMask:
     """
-    Clase para realizar segmentación de colores en imágenes
-    utilizando el espacio de color HSV.
+    Genera una máscara binaria basada en un rango de color en HSV.
     """
 
-    def __init__(self, image_path: str):
+    def apply(self, img: np.ndarray, lower_color: tuple, upper_color: tuple) -> np.ndarray:
 
-        self.image_path = image_path
-        self.image = cv2.imread(image_path)
-
-        if self.image is None:
-            raise ValueError(
-                f"The image could not be loaded from the path.: {image_path}"
-            )
-
-        self.hsv_image = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
-
-    def create_mask(self, lower_color: tuple, upper_color: tuple) -> np.ndarray:
-        """
-        Crea una mascara binaria basada en un rango de color HSV.
-        """
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         lower = np.array(lower_color, dtype=np.uint8)
         upper = np.array(upper_color, dtype=np.uint8)
 
-        mask = cv2.inRange(self.hsv_image, lower, upper)
+        mask = cv2.inRange(hsv, lower, upper)
 
         return mask
 
-    def apply_mask(self, mask: np.ndarray) -> np.ndarray:
-        """
-        Aplica una mascara a la imagen original.
-        """
+class ApplyMask:
+    """
+    Aplica una máscara binaria sobre una imagen.
+    """
 
-        segmented = cv2.bitwise_and(self.image, self.image, mask=mask)
+    def apply(self, img: np.ndarray, mask: np.ndarray) -> np.ndarray:
+        segmented = cv2.bitwise_and(img, img, mask=mask)
 
         return segmented
