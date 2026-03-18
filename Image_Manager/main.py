@@ -26,6 +26,8 @@ from Image_Manager.transform.scaling import ImageReduction, ImageAmplification
 from Image_Manager.transform.crop import ImageCrop
 from Image_Manager.transform.blend import ImageBlendAverage
 
+from Image_Manager.filters.gaussian_blur import GaussianBlur
+from Image_Manager.filters.erosion import Erosion
 from Image_Manager.filters.border_detector import (
     RobertsEdge,
     CannyEdge,
@@ -37,6 +39,8 @@ from Image_Manager.filters.border_detector import (
 )
 
 from Image_Manager.segmentation.threshold import ImageBinarization
+from Image_Manager.segmentation.contour_detector import ContourDetector
+from Image_Manager.segmentation.adaptive_threshold import AdaptiveThreshold
 from Image_Manager.segmentation.hsv_segmenter import (
     HSVColorMask,
     ApplyMask
@@ -195,12 +199,42 @@ def main():
 
     show("Mask", mask)
 
-    # Aplicar mascara
+    # Aplicar mascarax
     applier = ApplyMask()
     segmented = applier.apply(img1, mask)
 
     show("Segmented Image", segmented)
 
+    # Suavizado Gaussiano
+    gaussian = GaussianBlur()
+    blurred = gaussian.apply(img1, 7)
+    show("Gaussian Blur", blurred)
+
+    # Threshold Adaptativo
+    adaptive = AdaptiveThreshold()
+    adaptive_img = adaptive.apply(blurred, 11, 2, method="gaussian")
+    show("Adaptive Threshold", adaptive_img)
+
+    # Aplica un filtro deErosion
+    binarizer = ImageBinarization()
+    erosion = Erosion()
+
+    binary = binarizer.apply(img1, 120)
+    eroded_test = erosion.apply(binary, 5, 2)
+
+    show("Erosion Filter", eroded_test)
+
+    # Segmentacion por contorno
+    binarizer = ImageBinarization()
+    contour_detector = ContourDetector()
+
+    binary = binarizer.apply(img1, 120)
+
+    contours_only, contoured_only_img = contour_detector.apply(binary)
+
+    print(f"Contornos: {len(contours_only)}")
+
+    show("Contours Segmentation", contoured_only_img)
 
     plt.show()
 
