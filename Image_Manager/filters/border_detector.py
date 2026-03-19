@@ -4,7 +4,7 @@ import numpy as np
 
 class RobertsEdge:
     """
-    Detecta bordes en una imagen utilizando el operador Roberts.
+    Detect edges in an image using the Roberts operator.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -31,7 +31,7 @@ class RobertsEdge:
 
 class SobelXEdge:
     """
-    Detecta bordes horizontales utilizando el operador Sobel en X.
+    Detects horizontal edges using the X-direction Sobel operator.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -49,7 +49,7 @@ class SobelXEdge:
 
 class SobelYEdge:
     """
-    Detecta bordes verticales utilizando el operador Sobel en Y.
+    Detects vertical edges using the Y-axis Sobel operator.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -67,7 +67,7 @@ class SobelYEdge:
 
 class SobelMagnitude:
     """
-    Calcula la magnitud del gradiente utilizando Sobel.
+    Calculate the gradient magnitude using the Sobel filter.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -88,7 +88,7 @@ class SobelMagnitude:
 
 class PrewittEdge:
     """
-    Detecta bordes utilizando el operador Prewitt.
+    Detect edges using the Prewitt operator.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -121,7 +121,7 @@ class PrewittEdge:
 
 class LaplacianEdge:
     """
-    Detecta bordes utilizando el operador Laplaciano.
+    Detect edges using the Laplacian operator.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -139,7 +139,7 @@ class LaplacianEdge:
 
 class CannyEdge:
     """
-    Detecta bordes utilizando el algoritmo Canny.
+    Detects edges using the Canny algorithm.
     """
 
     def __init__(self, threshold1: int = 80, threshold2: int = 160):

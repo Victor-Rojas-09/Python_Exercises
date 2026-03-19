@@ -4,15 +4,11 @@ import numpy as np
 
 class GaussianBlur:
     """
-    Aplica un suavizado gaussiano a la imagen para reducir ruido.
+    Apply Gaussian blur to the image to reduce noise.
     """
 
     def apply(self, img: np.ndarray, ksize: int) -> np.ndarray:
-        """
-        Aplica desenfoque gaussiano.
-        """
 
-        # Asegurar que el kernel sea impar
         if ksize % 2 == 0:
             ksize += 1
 
