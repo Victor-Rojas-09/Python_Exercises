@@ -3,22 +3,21 @@ import numpy as np
 
 class ColorInverter:
     """
-    Invierte los colores de una imagen RGB.
+    Inverts the colors of an RGB image.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
-        """
-        Invierte los colores de la imagen.
-        """
+
         return 1 - img
 
 
 class RedChannel:
     """
-    Extrae unicamente el canal rojo de la imagen.
+    Extract only the red channel from the image.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
+
         result = np.copy(img)
         result[:, :, 0] = 0
         result[:, :, 1] = 0
@@ -28,7 +27,7 @@ class RedChannel:
 
 class GreenChannel:
     """
-    Extrae unicamente el canal verde de la imagen.
+    Extract only the green channel from the image.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -40,7 +39,7 @@ class GreenChannel:
 
 class BlueChannel:
     """
-    Extrae únicamente el canal azul de la imagen.
+    Extract only the blue channel from the image.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -52,7 +51,7 @@ class BlueChannel:
 
 class MagentaChannel:
     """
-    Extrae el canal magenta.
+    Extract the magenta channel.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -63,7 +62,7 @@ class MagentaChannel:
 
 class CyanChannel:
     """
-    Extrae el canal cyan.
+    Extract the cyan channel.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -74,7 +73,7 @@ class CyanChannel:
 
 class YellowChannel:
     """
-    Extrae el canal amarillo.
+    Extract the yellow channel.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:

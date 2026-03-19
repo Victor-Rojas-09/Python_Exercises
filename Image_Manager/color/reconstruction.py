@@ -3,8 +3,8 @@ import numpy as np
 
 class RGBReconstructor:
     """
-    Reconstruye una imagen RGB a partir de tres canales
-    rojo, verde y azul.
+    Reconstructs an RGB image from three channels:
+    red, green, and blue.
     """
 
     def apply(self, r: np.ndarray, g: np.ndarray, b: np.ndarray) -> np.ndarray:

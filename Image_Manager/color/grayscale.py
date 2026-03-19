@@ -3,8 +3,8 @@ import numpy as np
 
 class GrayscaleAverage:
     """
-    Convierte una imagen a escala de grises usando
-    el metodo de promedio (Average).
+    Convert an image to grayscale using
+    the averaging method.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -16,8 +16,8 @@ class GrayscaleAverage:
 
 class GrayscaleLuminosity:
     """
-    Convierte una imagen a escala de grises usando
-    el metodo de luminosidad.
+    Convert an image to grayscale using
+    the luminance method.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:
@@ -33,8 +33,8 @@ class GrayscaleLuminosity:
 
 class GrayscaleMidgray:
     """
-    Convierte una imagen a escala de grises usando
-    el metodo Midgray.
+    Convert an image to grayscale using
+    the Midgray method.
     """
 
     def apply(self, img: np.ndarray) -> np.ndarray:

@@ -14,7 +14,7 @@ class Histogram:
 
         plt.figure(figsize=(12,6))
         plt.hist(channel.ravel(), bins=256, color='red')
-        plt.title('Histograma de canal Rojo')
+        plt.title('Red Channel Histogram')
         plt.show()
 
     def applyGreen(self, img: np.ndarray) -> None:
@@ -26,7 +26,7 @@ class Histogram:
 
         plt.figure(figsize=(12,6))
         plt.hist(channel.ravel(), bins=256, color='green')
-        plt.title('Histograma de canal Verde')
+        plt.title('Green Channel Histogram')
         plt.show()
 
     def applyBlue(self, img: np.ndarray) -> None:
@@ -38,5 +38,5 @@ class Histogram:
 
         plt.figure(figsize=(12,6))
         plt.hist(channel.ravel(), bins=256, color='blue')
-        plt.title('Histograma de canal Azul')
+        plt.title('Blue Channel Histogram')
         plt.show()

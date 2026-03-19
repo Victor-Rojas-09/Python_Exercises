@@ -3,7 +3,7 @@ import numpy as np
 
 class BrightnessAdjust:
     """
-    Clase para ajustar el brillo de una imagen.
+    Class for adjusting the brightness of an image.
     """
 
     def apply(self, img: np.ndarray, value: int) -> np.ndarray:
@@ -17,7 +17,7 @@ class BrightnessAdjust:
 
 class ChannelAdjust:
     """
-    Ajusta la intensidad de un canal específico de la imagen.
+    Adjusts the brightness of a specific channel in the image.
     """
 
     def apply(self, img: np.ndarray, channel: int, value: int) -> np.ndarray:
