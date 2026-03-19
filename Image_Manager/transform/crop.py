@@ -3,7 +3,7 @@ import numpy as np
 
 class ImageCrop:
     """
-    Recorta una region especifica de la imagen.
+    Crop a specific area of the image.
     """
 
     def apply(

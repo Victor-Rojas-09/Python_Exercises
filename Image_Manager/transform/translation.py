@@ -3,7 +3,7 @@ import numpy as np
 
 class ImageTranslation:
     """
-    Realiza traslación de una imagen en el plano.
+    Translate an image on the plane.
     """
 
     def apply(self, img: np.ndarray, dx: int, dy: int) -> np.ndarray:

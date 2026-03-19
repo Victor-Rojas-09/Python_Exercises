@@ -3,8 +3,8 @@ import numpy as np
 
 class ImageRotator:
     """
-    Realiza rotacion de imagenes usando mapeo inverso
-    y el metodo de vecino mas cercano.
+    Rotate images using inverse mapping
+    and the nearest-neighbor method.
     """
 
     def apply(self, img: np.ndarray, ang_deg: float, fondo=0) -> np.ndarray:

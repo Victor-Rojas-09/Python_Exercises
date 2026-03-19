@@ -3,8 +3,8 @@ import numpy as np
 
 class ImageBlendAverage:
     """
-    Fusiona dos imagenes utilizando el promedio
-    de sus píxeles.
+    Merge two images by averaging
+    their pixels.
     """
 
     def apply(self, img1: np.ndarray, img2: np.ndarray) -> np.ndarray:

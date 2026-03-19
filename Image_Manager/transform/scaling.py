@@ -3,21 +3,21 @@ import numpy as np
 
 class ImageReduction:
     """
-    Reduce la resolución de la imagen
+    Reduce the image resolution
     """
 
     def apply(self, img: np.ndarray, factor: int) -> np.ndarray:
 
         if factor <= 0:
-            raise ValueError("El factor debe ser mayor que 0")
+            raise ValueError("The factor must be greater than 0")
 
         return img[::factor, ::factor]
 
 
 class ImageAmplification:
     """
-    Amploa una región central de la imagen mediante
-    repeticion de píxeles.
+    Enlarge a central region of the image by
+    repeating pixels.
     """
 
     def apply(self, img: np.ndarray, zoom_area: int, zoom_factor: int = 5) -> np.ndarray:
