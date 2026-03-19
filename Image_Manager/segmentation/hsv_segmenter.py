@@ -4,7 +4,7 @@ import numpy as np
 
 class HSVColorMask:
     """
-    Genera una máscara binaria basada en un rango de color en HSV.
+    Generate a bitmap mask based on a color range in HSV.
     """
 
     def apply(self, img: np.ndarray, lower_color: tuple, upper_color: tuple) -> np.ndarray:
@@ -20,7 +20,7 @@ class HSVColorMask:
 
 class ApplyMask:
     """
-    Aplica una máscara binaria sobre una imagen.
+    Apply a bitmap mask to an image.
     """
 
     def apply(self, img: np.ndarray, mask: np.ndarray) -> np.ndarray:

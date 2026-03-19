@@ -3,8 +3,8 @@ import numpy as np
 
 class ImageBinarization:
     """
-    Convierte una imagen a binaria utilizando un umbral
-    aplicado sobre su version en escala de grises.
+    Convert an image to binary using a threshold
+    applied to its grayscale version.
     """
 
     def apply(self, img: np.ndarray, threshold: int) -> np.ndarray:
