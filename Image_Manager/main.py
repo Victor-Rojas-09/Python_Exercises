@@ -25,6 +25,7 @@ from Image_Manager.transform.translation import ImageTranslation
 from Image_Manager.transform.scaling import ImageReduction, ImageAmplification
 from Image_Manager.transform.crop import ImageCrop
 from Image_Manager.transform.blend import ImageBlendAverage
+from Image_Manager.transform.flip import ImageFlip
 
 from Image_Manager.filters.gaussian_blur import GaussianBlur
 from Image_Manager.filters.erosion import Erosion
@@ -235,6 +236,18 @@ def main():
     print(f"Contornos: {len(contours_only)}")
 
     show("Contours Segmentation", contoured_only_img)
+
+    # Reflejo de la imagen
+    flipper = ImageFlip()
+
+    horizontal_flip = flipper.apply(img1, mode="horizontal")
+    show("Horizontal Flip", horizontal_flip)
+
+    vertical_flip = flipper.apply(img1, mode="vertical")
+    show("Vertical Flip", vertical_flip)
+
+    both_flip = flipper.apply(img1, mode="both")
+    show("Horizontal + Vertical Flip", both_flip)
 
     plt.show()
 
