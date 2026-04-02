@@ -118,7 +118,7 @@ def main():
 
     # Ajuste de canal
     channel_adjust = ChannelAdjust()
-    red_boost = channel_adjust.apply(img1, 0, 80)
+    red_boost = channel_adjust.apply(img1, 1, 80)
     show("Increase Red Channel", red_boost)
 
 
@@ -193,7 +193,7 @@ def main():
     # Crear mascara HSV
     masker = HSVColorMask()
 
-    # Valores para segmentar una mascara amarilla
+    # Valores para segmentar una mascara Amarilla
     lower_yellow = (10, 110, 80)
     upper_yellow = (30, 255, 255)
     mask = masker.apply(img1, lower_yellow, upper_yellow)
@@ -216,7 +216,7 @@ def main():
     adaptive_img = adaptive.apply(blurred, 11, 2, method="gaussian")
     show("Adaptive Threshold", adaptive_img)
 
-    # Aplica un filtro deErosion
+    # Aplica un filtro de Erosion
     binarizer = ImageBinarization()
     erosion = Erosion()
 
@@ -245,9 +245,6 @@ def main():
 
     vertical_flip = flipper.apply(img1, mode="vertical")
     show("Vertical Flip", vertical_flip)
-
-    both_flip = flipper.apply(img1, mode="both")
-    show("Horizontal + Vertical Flip", both_flip)
 
     plt.show()
 
