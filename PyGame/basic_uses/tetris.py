@@ -13,17 +13,22 @@ FALL_SPEED = 0.5
 
 # Colors
 BLACK = (0, 0, 0)
-CYAN = (0, 255, 255)
 
+COLORS = [
+    (0, 255, 255),   # Cyan
+    (255, 0, 0),     # Red
+    (0, 255, 0),     # Green
+    (0, 0, 255),     # Blue
+    (255, 255, 0),   # Yellow
+    (255, 165, 0),   # Orange
+]
 
-# Simple shape
 SHAPES = [
     [[1, 1, 1, 1]]
 ]
 
 def create_grid(locked_positions):
     """Create the game grid."""
-
     grid = [[BLACK for _ in range(COLS)] for _ in range(ROWS)]
 
     for (x, y), color in locked_positions.items():
@@ -35,7 +40,6 @@ def create_grid(locked_positions):
 
 def draw_grid(surface, grid):
     """Draw all blocks on screen."""
-
     for y in range(ROWS):
         for x in range(COLS):
             pygame.draw.rect(
@@ -47,7 +51,6 @@ def draw_grid(surface, grid):
 
 def is_valid_position(shape, grid, offset):
     """Check if shape can be placed in a position."""
-
     off_x, off_y = offset
 
     for y, row in enumerate(shape):
@@ -56,46 +59,39 @@ def is_valid_position(shape, grid, offset):
                 new_x = x + off_x
                 new_y = y + off_y
 
-                # Check boundaries
                 if new_x < 0 or new_x >= COLS or new_y >= ROWS:
                     return False
 
-                # Check collision
                 if new_y >= 0 and grid[new_y][new_x] != BLACK:
                     return False
 
     return True
 
 
-def lock_shape(shape, offset, locked_positions):
+def lock_shape(shape, offset, locked_positions, color):
     """Add shape blocks to locked positions."""
-
     off_x, off_y = offset
 
     for y, row in enumerate(shape):
         for x, cell in enumerate(row):
             if cell:
-                locked_positions[(off_x + x, off_y + y)] = CYAN
+                locked_positions[(off_x + x, off_y + y)] = color
 
 
 def clear_full_rows(grid, locked_positions):
     """Remove full rows and shift above blocks down."""
-
     for y in range(ROWS - 1, -1, -1):
         if BLACK not in grid[y]:
-            # Remove row
             for x in range(COLS):
                 del locked_positions[(x, y)]
 
-            # Move everything above down
             for (x, y2) in sorted(list(locked_positions), key=lambda k: k[1], reverse=True):
                 if y2 < y:
                     locked_positions[(x, y2 + 1)] = locked_positions.pop((x, y2))
 
 
-def draw_shape(surface, shape, offset):
+def draw_shape(surface, shape, offset, color):
     """Draw current falling shape."""
-
     off_x, off_y = offset
 
     for y, row in enumerate(shape):
@@ -103,7 +99,7 @@ def draw_shape(surface, shape, offset):
             if cell:
                 pygame.draw.rect(
                     surface,
-                    CYAN,
+                    color,
                     (
                         (off_x + x) * BLOCK_SIZE,
                         (off_y + y) * BLOCK_SIZE,
@@ -122,7 +118,9 @@ def main():
     clock = pygame.time.Clock()
 
     locked_positions = {}
+
     current_shape = random.choice(SHAPES)
+    current_color = random.choice(COLORS)
     current_pos = [COLS // 2 - 2, 0]
 
     fall_timer = 0
@@ -131,10 +129,8 @@ def main():
     while running:
         grid = create_grid(locked_positions)
 
-        # Time control
-        delta_time = clock.get_rawtime() / 1000
+        delta_time = clock.tick(FPS) / 1000
         fall_timer += delta_time
-        clock.tick(FPS)
 
         # Events
         for event in pygame.event.get():
@@ -155,7 +151,7 @@ def main():
             if is_valid_position(current_shape, grid, new_pos):
                 current_pos = new_pos
 
-        # Move down
+        # Move down (soft drop)
         if keys[pygame.K_s]:
             new_pos = [current_pos[0], current_pos[1] + 1]
             if is_valid_position(current_shape, grid, new_pos):
@@ -168,15 +164,30 @@ def main():
             if is_valid_position(current_shape, grid, new_pos):
                 current_pos = new_pos
             else:
-                # Lock piece
-                lock_shape(current_shape, current_pos, locked_positions)
-
-                # New piece
-                current_shape = random.choice(SHAPES)
-                current_pos = [COLS // 2 - 2, 0]
+                # Lock current piece
+                lock_shape(current_shape, current_pos, locked_positions, current_color)
 
                 # Clear rows
                 clear_full_rows(grid, locked_positions)
+
+                # Update grid after changes
+                grid = create_grid(locked_positions)
+
+                # Spawn new piece
+                spawn_pos = [COLS // 2 - 2, 0]
+                next_shape = random.choice(SHAPES)
+
+                # Game over
+                if not is_valid_position(next_shape, grid, spawn_pos):
+                    print("GAME OVER")
+                    pygame.time.delay(2000)
+
+                    running = False
+
+                else:
+                    current_shape = next_shape
+                    current_color = random.choice(COLORS)
+                    current_pos = spawn_pos
 
             fall_timer = 0
 
@@ -184,7 +195,7 @@ def main():
         screen.fill(BLACK)
 
         draw_grid(screen, grid)
-        draw_shape(screen, current_shape, current_pos)
+        draw_shape(screen, current_shape, current_pos, current_color)
 
         pygame.display.flip()
 
