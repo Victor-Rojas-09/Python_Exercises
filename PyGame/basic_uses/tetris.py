@@ -23,12 +23,39 @@ COLORS = [
     (255, 165, 0),   # Orange
 ]
 
+# SHAPES
 SHAPES = [
-    [[1, 1, 1, 1]]
+    [[1, 1, 1, 1]],  # I
+
+    [[1, 1],
+     [1, 1]],        # O
+
+    [[0, 1, 0],
+     [1, 1, 1]],     # T
+
+    [[1, 0, 0],
+     [1, 1, 1]],     # L
+
+    [[0, 0, 1],
+     [1, 1, 1]],     # J
+
+    [[1, 1, 0],
+     [0, 1, 1]],     # S
+
+    [[0, 1, 1],
+     [1, 1, 0]]      # Z
 ]
+
+
+def rotate_shape(shape):
+    """Rotate shape clockwise."""
+
+    return [list(row) for row in zip(*shape[::-1])]
+
 
 def create_grid(locked_positions):
     """Create the game grid."""
+
     grid = [[BLACK for _ in range(COLS)] for _ in range(ROWS)]
 
     for (x, y), color in locked_positions.items():
@@ -40,6 +67,7 @@ def create_grid(locked_positions):
 
 def draw_grid(surface, grid):
     """Draw all blocks on screen."""
+
     for y in range(ROWS):
         for x in range(COLS):
             pygame.draw.rect(
@@ -51,6 +79,7 @@ def draw_grid(surface, grid):
 
 def is_valid_position(shape, grid, offset):
     """Check if shape can be placed in a position."""
+
     off_x, off_y = offset
 
     for y, row in enumerate(shape):
@@ -70,6 +99,7 @@ def is_valid_position(shape, grid, offset):
 
 def lock_shape(shape, offset, locked_positions, color):
     """Add shape blocks to locked positions."""
+
     off_x, off_y = offset
 
     for y, row in enumerate(shape):
@@ -80,6 +110,7 @@ def lock_shape(shape, offset, locked_positions, color):
 
 def clear_full_rows(grid, locked_positions):
     """Remove full rows and shift above blocks down."""
+
     for y in range(ROWS - 1, -1, -1):
         if BLACK not in grid[y]:
             for x in range(COLS):
@@ -92,6 +123,7 @@ def clear_full_rows(grid, locked_positions):
 
 def draw_shape(surface, shape, offset, color):
     """Draw current falling shape."""
+
     off_x, off_y = offset
 
     for y, row in enumerate(shape):
@@ -136,6 +168,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            # Rotate with W
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    rotated = rotate_shape(current_shape)
+                    if is_valid_position(rotated, grid, current_pos):
+                        current_shape = rotated
 
         keys = pygame.key.get_pressed()
 
