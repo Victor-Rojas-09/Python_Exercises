@@ -136,7 +136,3 @@ class PongGame:
 
         pygame.quit()
 
-
-# Ejecutar
-game = PongGame(800, 500)
-game.game()

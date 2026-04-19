@@ -1,85 +1,81 @@
 import pygame
-from .pong import PongGame
+from PyGame.PONG.src.pong import PongGame
 
+
+# Initialize pygame once
 pygame.init()
 pygame.mixer.init()
 
+# Global configuration
+SCREEN_SIZE = (800, 450)
+SCREEN = pygame.display.set_mode(SCREEN_SIZE)
 
-def Inicio():
-    Tamano = (800, 450)
-    ventana = pygame.display.set_mode(Tamano)
 
-    ImgInicio = pygame.image.load("/assets/Presentation.jpg")
+def show_intro():
 
-    # Redimensionar la imagen al tamaño de la ventana
-    ImgInicio = pygame.transform.scale(ImgInicio, Tamano)
+    image = pygame.image.load("D:/Projects on Github/PyGame/PONG/assets/Presentation.jpg")
+    image = pygame.transform.scale(image, SCREEN_SIZE)
 
-    ventana.blit(ImgInicio, (0, 0))
-
+    SCREEN.blit(image, (0, 0))
     pygame.display.flip()
+
     pygame.time.delay(1200)
 
-    Menu()
+    show_menu()
 
 
-#OPCION 1 MENU
-def Menu():
-    Tamano = (800, 450)
-    ventana = pygame.display.set_mode(Tamano)
-    ImgInicio = pygame.image.load("/assets/Menu.jpg")
-    ventana.blit(ImgInicio, (0, 0))
+def show_menu():
+
+    image = pygame.image.load("D:/Projects on Github/PyGame/PONG/assets/Menu.jpg")
+    image = pygame.transform.scale(image, SCREEN_SIZE)
+
     running = True
 
+    # Define button area (Play button)
+    play_button = pygame.Rect(162, 151, 393, 77)
+
     while running:
-        
+        SCREEN.blit(image, (0, 0))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                return
 
-            # ACTIVAR BOTONES
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                
-                if pos[0] > 162 and pos[0] < 555 and pos[1] > 151 and pos[1] < 228:
-                    print("Entra JUGAR")
-                    Jugar()
+                if play_button.collidepoint(event.pos):
+                    print("Starting game...")
+                    start_game()
                     running = False
 
         pygame.display.flip()
 
-    pygame.quit()
 
-def Ayuda():
-    Tamano = (800, 450)
-    ventana = pygame.display.set_mode(Tamano)
-    ImgAyuda = pygame.image.load("/assets/Help.jpg")
-    ventana.blit(ImgAyuda, (0, 0))
+def show_help():
+
+    image = pygame.image.load("D:/Projects on Github/PyGame/PONG/assets/Help.jpg")
+    image = pygame.transform.scale(image, SCREEN_SIZE)
+
     running = True
 
     while running:
-        
+        SCREEN.blit(image, (0, 0))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                print(pos)
-
-                # BOTON VOLVER
-                #if pos[0] > X1  and pos[0] < X2 and pos[1] > Y1 and pos[1] < Y2:
-                    #Menu()
-                    #running = False
+                pygame.quit()
+                return
 
         pygame.display.flip()
 
 
-def Jugar():
-    #AQUI VA EL CÓDIGO DEL JUEGO COMPLETO
-    PongGame(800, 500)
+def start_game():
 
-    #CUANDO EL JUEGO TERMINE, DEBE LLAMAR A MENU()
+    game = PongGame(800, 500)
+    game.game()
+    # After game ends, go back to menu
+    show_menu()
 
 
 if __name__ == '__main__':
-    Inicio()
+    show_intro()
