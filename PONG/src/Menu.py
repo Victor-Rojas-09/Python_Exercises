@@ -1,5 +1,5 @@
 import pygame
-from PyGame.PONG.src.pong import PongGame
+from PONG.src.pong import PongGame
 
 
 # Initialize pygame once
@@ -7,13 +7,13 @@ pygame.init()
 pygame.mixer.init()
 
 # Global configuration
-SCREEN_SIZE = (800, 450)
+SCREEN_SIZE = (854, 480)
 SCREEN = pygame.display.set_mode(SCREEN_SIZE)
 
 
 def show_intro():
 
-    image = pygame.image.load("D:/Projects on Github/PyGame/PONG/assets/Presentation.jpg")
+    image = pygame.image.load("../assets/images/presentation.png")
     image = pygame.transform.scale(image, SCREEN_SIZE)
 
     SCREEN.blit(image, (0, 0))
@@ -26,13 +26,15 @@ def show_intro():
 
 def show_menu():
 
-    image = pygame.image.load("D:/Projects on Github/PyGame/PONG/assets/Menu.jpg")
+    image = pygame.image.load("../assets/images/menu.png")
     image = pygame.transform.scale(image, SCREEN_SIZE)
 
     running = True
 
+
     # Define button area (Play button)
-    play_button = pygame.Rect(162, 151, 393, 77)
+    play_button = pygame.Rect(210, 177, 418, 78)
+    help_button = pygame.Rect(210, 269, 417, 80)
 
     while running:
         SCREEN.blit(image, (0, 0))
@@ -48,12 +50,17 @@ def show_menu():
                     start_game()
                     running = False
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if help_button.collidepoint(event.pos):
+                    print("help image...")
+                    show_help()
+
         pygame.display.flip()
 
 
 def show_help():
 
-    image = pygame.image.load("D:/Projects on Github/PyGame/PONG/assets/Help.jpg")
+    image = pygame.image.load("../assets/images/help.png")
     image = pygame.transform.scale(image, SCREEN_SIZE)
 
     running = True
@@ -71,7 +78,7 @@ def show_help():
 
 def start_game():
 
-    game = PongGame(800, 500)
+    game = PongGame(854, 480)
     game.game()
     # After game ends, go back to menu
     show_menu()
