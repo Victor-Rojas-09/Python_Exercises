@@ -12,12 +12,7 @@ pygame.display.set_caption("Snake Game")
 
 clock = pygame.time.Clock()
 
-snake_body = [
-    (400, 300),
-    (380, 300),
-    (360, 300),
-    (340, 300),
-]
+snake_body = [(400, 300),(340, 300),(360, 300),(380, 300)]
 snake_direction = (1, 0)
 
 food_position = (
