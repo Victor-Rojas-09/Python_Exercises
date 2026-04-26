@@ -5,7 +5,7 @@ class PongGame:
     def __init__(self, width: int, height: int):
         pygame.init()
         pygame.mixer.init()
-        
+
         self.width = width
         self.height = height
 
@@ -15,6 +15,10 @@ class PongGame:
         # Font
         self.font = pygame.font.SysFont("Arial", 40)
         self.game_over_font = pygame.font.SysFont("Arial", 60)
+
+        self.collision_sound = pygame.mixer.Sound("../assets/sounds/pong.wav")
+        self.point_sound = pygame.mixer.Sound("../assets/sounds/points.wav")
+        self.game_over = pygame.mixer.Sound("../assets/sounds/game_over.wav")
 
         # Ball
         self.ball_pos = [width // 2, height // 2]
@@ -83,27 +87,37 @@ class PongGame:
                 (self.ball_pos[1] - self.ball_radius) <= (self.left_y + self.paddle_height) and
                 (self.ball_pos[1] + self.ball_radius) >= self.left_y
             ):
+                self.collision_sound.play()
+
                 self.ball_pos[0] = self.left_x + self.paddle_width + self.ball_radius
                 self.ball_vel_x *= -1
 
             # Collision right paddle
             if (
+
+
                 (self.ball_pos[0] - self.ball_radius) < (self.right_x + self.paddle_width) and
                 (self.ball_pos[0] + self.ball_radius) > self.right_x and
                 (self.ball_pos[1] - self.ball_radius) <= (self.right_y + self.paddle_height) and
                 (self.ball_pos[1] + self.ball_radius) >= self.right_y
             ):
+                self.collision_sound.play()
+
                 self.ball_pos[0] = self.right_x - self.ball_radius
                 self.ball_vel_x *= -1
 
             # Score conditions
             if self.ball_pos[0] < 0:
+                self.point_sound.play()
                 self.player2_score += 1
+
                 self.ball_pos = [self.width // 2, self.height // 2]
                 self.ball_vel_x *= -1
 
             if self.ball_pos[0] > self.width:
+                self.point_sound.play()
                 self.player1_score += 1
+
                 self.ball_pos = [self.width // 2, self.height // 2]
                 self.ball_vel_x *= -1
 
@@ -138,6 +152,8 @@ class PongGame:
 
         game_over_text = self.game_over_font.render("GAME OVER", True, (255, 0, 0))
         winner_render = self.font.render(self.winner_text, True, (255, 255, 255))
+
+        self.game_over.play()
 
         self.screen.blit(game_over_text, (
             self.width // 2 - game_over_text.get_width() // 2,
