@@ -78,10 +78,11 @@ def show_help():
 
 def start_game():
 
-    game = PongGame(854, 480)
-    game.game()
-    # After game ends, go back to menu
-    show_menu()
+    pong = PongGame(854, 480)
+    finished = pong.game()
+
+    if finished:
+        show_menu()
 
 
 if __name__ == '__main__':
