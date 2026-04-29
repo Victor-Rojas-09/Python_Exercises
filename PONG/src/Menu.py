@@ -13,7 +13,7 @@ SCREEN = pygame.display.set_mode(SCREEN_SIZE)
 
 def show_intro():
 
-    image = pygame.image.load("../assets/images/presentation.png")
+    image = pygame.image.load("../assets/images/FrondPage.png")
     image = pygame.transform.scale(image, SCREEN_SIZE)
 
     SCREEN.blit(image, (0, 0))
@@ -26,7 +26,7 @@ def show_intro():
 
 def show_menu():
 
-    image = pygame.image.load("../assets/images/menu.png")
+    image = pygame.image.load("../assets/images/Menu.png")
     image = pygame.transform.scale(image, SCREEN_SIZE)
 
     running = True
@@ -60,7 +60,7 @@ def show_menu():
 
 def show_help():
 
-    image = pygame.image.load("../assets/images/help.png")
+    image = pygame.image.load("../assets/images/Info.png")
     image = pygame.transform.scale(image, SCREEN_SIZE)
 
     running = True
