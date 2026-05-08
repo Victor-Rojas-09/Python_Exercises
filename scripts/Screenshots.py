@@ -2,7 +2,7 @@ import cv2
 import os
 
 # Video Path
-video_path = "../data/video.mp4"
+video_path = "../data/videos/video.mp4"
 
 # Directory for the frames
 output_dir = "../data/frames"
