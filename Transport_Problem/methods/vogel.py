@@ -1,28 +1,18 @@
-"""
-Método de Aproximación de Vogel
-"""
-
 import numpy as np
 from Transport_Problem.data.transport_problem import TransportProblem
 
 class VogelApproximation:
     """
-    Método de aproximación de Vogel para generar una solución inicial.
+    Vogel approximation method used to generate an initial feasible solution.
     """
 
     def solve(self, problem: TransportProblem) -> np.ndarray:
         """
-        Parameters
-        ----------
-        problem : TransportProblem
-            Instancia del problema de transporte.
-
-        Returns
-        -------
-        np.ndarray
-            Matriz de asignación inicial.
+        Functions to compute row and column penalties
         """
+
         rows, cols = problem.costs.shape
+
         allocation = np.zeros((rows, cols))
         supply = problem.supply.copy()
         demand = problem.demand.copy()
@@ -31,16 +21,26 @@ class VogelApproximation:
         active_rows = [True] * rows
         active_cols = [True] * cols
 
-        # Funciones para calcular penalización de fila y columna
+        # Functions to compute row and column penalties
         def row_penalty(row):
+            """
+            Calculate row penalties.
+            """
+
             vals = sorted(costs[row, c] for c in range(cols) if active_cols[c])
+
             return (vals[1] - vals[0]) if len(vals) >= 2 else 0
 
         def col_penalty(col):
+            """
+            Calculate column penalties.
+            """
+
             vals = sorted(costs[r, col] for r in range(rows) if active_rows[r])
+
             return (vals[1] - vals[0]) if len(vals) >= 2 else 0
 
-        # Iteramos hasta agotar oferta y demanda
+        # # Iterate until supply and demand are exhausted
         for _ in range(rows + cols - 1):
             if supply.sum() < 1e-9 or demand.sum() < 1e-9:
                 break
@@ -52,7 +52,7 @@ class VogelApproximation:
             if not penalties:
                 break
 
-            # Seleccionamos la mayor penalización
+            # Select the highest penalty
             _, selected, kind = max(penalties, key=lambda x: x[0])
 
             if kind == 'row':
@@ -65,14 +65,15 @@ class VogelApproximation:
             assigned = min(supply[row], demand[column])
             allocation[row, column] = assigned
 
-            # Reducimos oferta y demanda
+            # Reduce supply and demand
             supply[row] -= assigned
             demand[column] -= assigned
 
-            # Desactivamos fila o columna agotada
+            # Deactivate exhausted row or column
             if np.isclose(supply[row], 0):
                 active_rows[row] = False
                 costs[row, :] = np.inf
+
             if np.isclose(demand[column], 0):
                 active_cols[column] = False
                 costs[:, column] = np.inf

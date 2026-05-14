@@ -1,9 +1,11 @@
 """
-El Main donde ingreso el problema y pruebo los metodos: 
-1. Crear el problema y balancearlo.
-2. Generar soluciones iniciales (NW, Costo Mínimo, Vogel).
-3. Optimizar con Stepping Stone.
-4. Mostrar respipultados y gráficos.
+The Main method where I input the problem and test the methods:
+
+1. Create and balance the problem.
+
+2. Generate initial solutions (Northwest Corner, Minimum Cost, Vogel's Approximation Method).
+3. Optimize with Stepping Stone.
+4. Display results and graphs.
 """
 
 import numpy as np
@@ -15,58 +17,58 @@ from optimization.stepping_stone import SteppingStone
 from visualization.visualizer import TransportVisualizer
 
 def main():
-    # Datos del problema
+
+    # Problem data
     costs = np.array([
-        [5, 2, 7, 3],
-        [3, 6, 6, 1],
-        [6, 1, 2, 4],
-        [4, 3, 6, 6]
+    [5, 2, 7, 3],
+    [3, 6, 6, 1],
+    [6, 1, 2, 4],
+
+    [4, 3, 6, 6]
+
     ], dtype=float)
 
     supply = np.array([80, 30, 60, 45], dtype=float)
     demand = np.array([70, 40, 70, 35], dtype=float)
 
-    # Crear problema y balancearlo
+    # Create problem and balance it
     problem = TransportProblem(costs, supply, demand)
     problem.balance_problem()
 
-    # Metodo de la Esquina Noroeste
+    # Northwest Corner Method
     nw_method = NorthWestCorner()
     nw_solution = nw_method.solve(problem)
 
-    # Metodo del Costo Mínimo
+    # Minimum Cost Method
     mc_method = MinimumCostMethod()
     mc_solution = mc_method.solve(problem)
 
-    # Metodo de Vogel
+    # Vogel method
     vg_method = VogelApproximation()
     vg_solution = vg_method.solve(problem)
 
-    # Optimizacion con Stepping Stone
-    # Para la Esquina Noroeste
+    # Optimization with Stepping stone
+    # For the Northwest Corner
     optimizer = SteppingStone()
     optimal_solution_NW, history = optimizer.optimize(nw_solution, problem)
 
-    # Para Costo Minimo
+    # For Minimum Cost
     optimizer = SteppingStone()
     optimal_solution_MC, history = optimizer.optimize(mc_solution, problem)
 
-    # Para Vogel
+    # For Vogel
     optimizer = SteppingStone()
     optimal_solution_VG, history = optimizer.optimize(vg_solution, problem)
 
-    # Visualizacion de resultados
+    # Visualization of results
     visualizer = TransportVisualizer()
-    visualizer.show_assignment(nw_solution, problem, "Asignación — Esquina Noroeste")
-    visualizer.show_assignment(mc_solution, problem, "Asignación — Costo Mínimo")
-    visualizer.show_assignment(vg_solution, problem, "Asignación — Vogel")
-    visualizer.show_assignment(optimal_solution_NW, problem, "Asignación Óptima para Esquina Noroeste - Stepping Stone")
-    visualizer.show_assignment(optimal_solution_MC, problem, "Asignación Óptima para Costo Mínimo - Stepping Stone")
-    visualizer.show_assignment(optimal_solution_VG, problem, "Asignación Óptima Para Vogel- Stepping Stone")
+    visualizer.show_assignment(nw_solution, problem, "Assignment — Northwest Corner")
+    visualizer.show_assignment(mc_solution, problem, "Assignment — Minimum Cost")
+    visualizer.show_assignment(vg_solution, problem, "Assignment — Vogel")
+    visualizer.show_assignment(optimal_solution_NW, problem, "Assignment Optimal for Northwest Corner - Stepping Stone")
+    visualizer.show_assignment(optimal_solution_MC, problem, "Optimal Assignment for Minimum Cost - Stepping Stone")
+    visualizer.show_assignment(optimal_solution_VG, problem, "Optimal Assignment for Vogel-Stepping Stone")
 
-    # Graficos
-    visualizer.plot_convergence(history)
-    visualizer.compare_solutions(nw_solution, optimal_solution_VG, problem)
 
 if __name__ == "__main__":
     main()

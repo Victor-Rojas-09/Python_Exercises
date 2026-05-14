@@ -22,7 +22,7 @@ class PongGame:
 
         # Ball
         self.ball_pos = [width // 2, height // 2]
-        self.ball_vel_x = 3
+        self.ball_vel_x = 4
         self.ball_vel_y = 3
         self.ball_radius = 15
 
@@ -31,7 +31,7 @@ class PongGame:
         self.left_y = height // 2 - 40
         self.paddle_width = 10
         self.paddle_height = 80
-        self.paddle_speed = 5
+        self.paddle_speed = 3
 
         # Right paddle
         self.right_x = width - 30

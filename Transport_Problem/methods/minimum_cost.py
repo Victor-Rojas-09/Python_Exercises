@@ -1,37 +1,29 @@
-"""
-Método de Costo Mínimo
-"""
-
 import numpy as np
 from Transport_Problem.data.transport_problem import TransportProblem
 
 class MinimumCostMethod:
     """
-    Método de costo mínimo para generar una solución inicial.
+    Minimum cost method used to generate an initial feasible solution.
     """
 
     def solve(self, problem: TransportProblem) -> np.ndarray:
         """
-        Parameters
-        ----------
-        problem : TransportProblem
-            Instancia del problema de transporte.
-
-        Returns
-        -------
-        np.ndarray
-            Matriz de asignación inicial.
+        Solve the transportation problem using the minimum cost method.
         """
+
         rows, cols = problem.costs.shape
+
         allocation = np.zeros((rows, cols))
         supply = problem.supply.copy()
         demand = problem.demand.copy()
         costs = problem.costs.copy()
 
-        # Mientras haya oferta y demanda por asignar
+        # Continue while there is remaining supply and demand
         while supply.sum() > 1e-9 and demand.sum() > 1e-9:
-            # Seleccionamos la celda con menor costo disponible
+
+            # Select the available cell with the minimum cost
             mask = (costs < np.inf)
+
             if not mask.any():
                 break
 
@@ -39,14 +31,15 @@ class MinimumCostMethod:
             assigned = min(supply[row], demand[column])
             allocation[row, column] = assigned
 
-            # Reducimos oferta y demanda
+            # Reduce supply and demand
             supply[row] -= assigned
             demand[column] -= assigned
 
-            # Si se agotó la oferta de la fila, bloqueamos esa fila
+            # Block row if supply is exhausted
             if np.isclose(supply[row], 0):
                 costs[row, :] = np.inf
-            # Si se agotó la demanda de la columna, bloqueamos esa columna
+
+            # Block column if demand is exhausted
             if np.isclose(demand[column], 0):
                 costs[:, column] = np.inf
 
