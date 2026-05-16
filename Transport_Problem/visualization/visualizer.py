@@ -1,7 +1,3 @@
-"""
-Visualization class for transportation problem results.
-"""
-
 import pandas as pd
 import numpy as np
 from Transport_Problem.data.transport_problem import TransportProblem
@@ -12,28 +8,13 @@ class TransportVisualizer:
     Class used to display transportation problem results.
     """
 
-    def show_assignment(
-        self,
-        allocation: np.ndarray,
-        problem: TransportProblem,
-        title: str = "Assignment"
-    ) -> None:
+    def show_assignment(self, allocation: np.ndarray, problem: TransportProblem, title: str = "Assignment") -> None:
         """
         Display the allocation matrix as a formatted table.
-
-        Parameters
-        ----------
-        allocation : np.ndarray
-            Allocation matrix.
-        problem : TransportProblem
-            Transportation problem instance.
-        title : str, optional
-            Table title.
         """
+
         if allocation.shape != problem.costs.shape:
-            raise ValueError(
-                "Allocation matrix dimensions must match the cost matrix dimensions."
-            )
+            raise ValueError("Allocation matrix dimensions must match the cost matrix dimensions.")
 
         rows, cols = allocation.shape
 
@@ -47,23 +28,9 @@ class TransportVisualizer:
         print(df.to_string())
         print(f"\nTotal Cost = {problem.total_cost(allocation):.2f}")
 
-    def compare_solutions(
-        self,
-        initial: np.ndarray,
-        optimal: np.ndarray,
-        problem: TransportProblem
-    ) -> None:
+    def compare_solutions(self, initial: np.ndarray, optimal: np.ndarray, problem: TransportProblem) -> None:
         """
         Compare the initial and optimal solutions in tabular format.
-
-        Parameters
-        ----------
-        initial : np.ndarray
-            Initial feasible solution.
-        optimal : np.ndarray
-            Optimal solution.
-        problem : TransportProblem
-            Transportation problem instance.
         """
         if (
             initial.shape != problem.costs.shape or

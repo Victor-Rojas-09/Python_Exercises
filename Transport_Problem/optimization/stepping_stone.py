@@ -7,14 +7,19 @@ class SteppingStone:
     """
     Stepping Stone optimization method for transportation problems.
 
-    The algorithm improves an initial feasible transportation plan by:
-    1. Evaluating unused routes.
-    2. Building improvement cycles.
-    3. Moving flow through cycles that reduce total cost.
-    4. Repeating until no further improvement is possible.
+    Features:
+    - Correct cycle handling.
+    - Proper reduced cost computation.
+    - Correct theta updates.
+    - Supports degeneracy through explicit basic variables.
+    - Searches cycles in both directions.
     """
 
-    def optimize(self, init_allocation: np.ndarray, problem: TransportProblem
+    def optimize(
+        self,
+        init_allocation: np.ndarray,
+        problem: TransportProblem,
+        basic_cells: set = None
     ):
         """
         Optimize a feasible transportation solution using
@@ -23,167 +28,156 @@ class SteppingStone:
 
         total_rows, total_columns = problem.costs.shape
 
-        optimized_allocation = init_allocation.copy().astype(float)
+        optimized_allocation = (
+            init_allocation.copy().astype(float)
+        )
+
+        # If no explicit basis is provided,
+        # use positive allocations as basics
+        if basic_cells is None:
+
+            basic_cells = set(
+                zip(*np.where(optimized_allocation > 0))
+            )
 
         history = []
 
-        # Main optimization loop
         for iteration_number in range(1, 100):
 
-            # Compute the current transportation cost
             current_total_cost = problem.total_cost(
                 optimized_allocation
             )
 
-            # Compute reduced costs for every non-basic cell
-            reduced_costs = self.compute_reduced_costs(
-                optimized_allocation,
-                problem.costs
-            )
-
-            # Store iteration data for analysis/debugging
             history.append({
                 "iteration": iteration_number,
                 "cost": current_total_cost,
                 "allocation": optimized_allocation.copy()
             })
 
-            # Select all improving moves
+            # Compute reduced costs
+            reduced_costs = self.compute_reduced_costs(
+                optimized_allocation,
+                problem.costs,
+                basic_cells
+            )
+
+            # Select improving moves
             improving_moves = {
-                cell_position: reduced_cost
-                for cell_position, reduced_cost
-                in reduced_costs.items()
-                if reduced_cost < -1e-9
+                cell: value
+                for cell, value in reduced_costs.items()
+                if value < -1e-9
             }
 
-            # If no negative reduced costs exist, the solution is optimal
+            # Optimal solution reached
             if not improving_moves:
                 break
 
-            # Select the entering cell with the
-            # most negative reduced cost
+            # Entering variable
             entering_cell = min(
                 improving_moves,
                 key=improving_moves.get
             )
 
-            # Build the improvement cycle
-            improvement_cycle = self.find_cycle(
-                optimized_allocation,
+            # Build cycle
+            cycle = self.find_cycle(
+                basic_cells,
                 entering_cell,
                 total_rows,
                 total_columns
             )
 
-            # If no valid cycle is found,
-            # stop the optimization
-            if improvement_cycle is None:
+            if cycle is None:
                 break
 
-            # Cells in odd positions are subtraction nodes
+            # remove repeated final node
+            cycle_nodes = cycle[:-1]
+
+            # Odd positions are subtracting cells
             subtracting_cells = [
-                improvement_cycle[index]
-                for index in range(1, len(improvement_cycle), 2)
+                cycle_nodes[index]
+                for index in range(1, len(cycle_nodes), 2)
             ]
 
-            # Determine the maximum transferable flow
-            # without violating feasibility
             theta = min(
-                optimized_allocation[row_index, column_index]
-                for row_index, column_index in subtracting_cells
+                optimized_allocation[row, col]
+                for row, col in subtracting_cells
             )
 
-            # Update the transportation plan
-            # by alternating additions/subtractions
-            for cycle_index, (
-                row_index,
-                column_index
-            ) in enumerate(improvement_cycle):
+            # Apply alternating updates
+            for cycle_index, (row, col) in enumerate(cycle_nodes):
 
-                # Even positions receive flow
                 if cycle_index % 2 == 0:
 
-                    optimized_allocation[
-                        row_index,
-                        column_index
-                    ] += theta
+                    optimized_allocation[row, col] += theta
 
-                # Odd positions lose flow
                 else:
 
-                    optimized_allocation[
-                        row_index,
-                        column_index
-                    ] -= theta
+                    optimized_allocation[row, col] -= theta
 
-                    # Remove floating-point residuals
-                    if (
-                        optimized_allocation[
-                            row_index,
-                            column_index
-                        ] < 1e-9
-                    ):
-                        optimized_allocation[
-                            row_index,
-                            column_index
-                        ] = 0.0
+                    # Numerical cleanup
+                    if optimized_allocation[row, col] < 1e-9:
+                        optimized_allocation[row, col] = 0.0
+
+            # Update basis
+
+            # Entering variable becomes basic
+            basic_cells.add(entering_cell)
+
+            # Remove ONE leaving variable
+            for row, col in subtracting_cells:
+
+                if abs(optimized_allocation[row, col]) < 1e-9:
+
+                    if (row, col) != entering_cell:
+
+                        basic_cells.remove((row, col))
+                        break
 
         return optimized_allocation, history
 
-    def compute_reduced_costs(
-        self,
-        allocation_matrix: np.ndarray,
-        transportation_costs: np.ndarray
-    ):
+    def compute_reduced_costs(self, allocation_matrix: np.ndarray, transportation_costs: np.ndarray, basic_cells: set):
         """
-        Compute reduced costs for all unused routes.
-
-        The reduced cost represents how the total transportation
-        cost would change if one unit were assigned to a currently
-        unused route.
+        Compute reduced costs for all non-basic cells.
         """
 
         total_rows, total_columns = transportation_costs.shape
 
-        # Basic cells are currently allocated routes
-        basic_cells = set(
-            zip(*np.where(allocation_matrix > 0))
-        )
-
         reduced_costs = {}
 
-        # Evaluate every non-basic cell
         for row_index, column_index in product(
             range(total_rows),
             range(total_columns)
         ):
 
-            current_cell = (row_index, column_index)
+            current_cell = (
+                row_index,
+                column_index
+            )
 
-            # Skip already allocated cells
+            # Skip basic variables
             if current_cell in basic_cells:
                 continue
 
-            # Build an improvement cycle
             cycle = self.find_cycle(
-                allocation_matrix,
+                basic_cells,
                 current_cell,
                 total_rows,
                 total_columns
             )
 
-            # If no valid cycle exists,
-            # the reduced cost cannot be computed
             if cycle is None:
                 continue
 
-            reduced_cost = 0
+            # IMPORTANT:
+            # ignore repeated final node
+            cycle_nodes = cycle[:-1]
 
-            # Compute alternating cost sum
+            reduced_cost = 0.0
+
             for cycle_index, (
                 cycle_row,
                 cycle_column
-            ) in enumerate(cycle):
+            ) in enumerate(cycle_nodes):
 
                 if cycle_index % 2 == 0:
 
@@ -206,36 +200,20 @@ class SteppingStone:
 
         return reduced_costs
 
-    def find_cycle(self, allocation_matrix: np.ndarray, start_cell, total_rows: int, total_columns: int):
+    def find_cycle(self, basic_cells: set, start_cell, total_rows: int, total_columns: int):
         """
-        Find a closed improvement cycle.
-
-        The cycle:
-        - starts from a non-basic cell,
-        - alternates between horizontal and vertical moves,
-        - traverses only basic cells,
-        - returns to the starting position.
+        Find a valid Stepping Stone cycle.
         """
 
-        # Extract all currently allocated cells
-        basic_cells = set(
-            zip(*np.where(allocation_matrix > 0))
-        )
+        # Temporary graph including entering variable
+        working_basic_cells = basic_cells.copy()
+        working_basic_cells.add(start_cell)
 
-        # Temporarily add the entering cell
-        # so the cycle can be constructed
-        basic_cells.add(start_cell)
-
-        def dfs(current_path,search_horizontally
-        ):
-            """
-            Recursive DFS (Depth First Search) used to construct
-            alternating transportation cycles.
-            """
+        def dfs(current_path, search_horizontally):
 
             current_row, current_column = current_path[-1]
 
-            # Horizontal exploration
+            # Horizontal moves
             if search_horizontally:
 
                 for next_column in range(total_columns):
@@ -248,18 +226,16 @@ class SteppingStone:
                         next_column
                     )
 
-                    # A valid cycle must contain
-                    # at least 4 nodes
+                    # Close cycle
                     if (
-                        len(current_path) >= 4
-                        and candidate_cell == start_cell
+                        candidate_cell == start_cell
+                        and len(current_path) >= 4
                     ):
                         return current_path + [start_cell]
 
-                    # Continue dfs through
-                    # valid unvisited basic cells
+                    # Continue search
                     if (
-                        candidate_cell in basic_cells
+                        candidate_cell in working_basic_cells
                         and candidate_cell not in current_path
                     ):
 
@@ -268,10 +244,10 @@ class SteppingStone:
                             False
                         )
 
-                        if result:
+                        if result is not None:
                             return result
 
-            # Vertical exploration
+            # Vertical moves
             else:
 
                 for next_row in range(total_rows):
@@ -284,14 +260,16 @@ class SteppingStone:
                         current_column
                     )
 
+                    # Close cycle
                     if (
-                        len(current_path) >= 4
-                        and candidate_cell == start_cell
+                        candidate_cell == start_cell
+                        and len(current_path) >= 4
                     ):
                         return current_path + [start_cell]
 
+                    # Continue search
                     if (
-                        candidate_cell in basic_cells
+                        candidate_cell in working_basic_cells
                         and candidate_cell not in current_path
                     ):
 
@@ -300,10 +278,14 @@ class SteppingStone:
                             True
                         )
 
-                        if result:
+                        if result is not None:
                             return result
 
-            # No valid continuation found
             return None
 
-        return dfs([start_cell], True)
+        # try both initial directions
+        return (
+            dfs([start_cell], True)
+            or
+            dfs([start_cell], False)
+        )
