@@ -20,12 +20,10 @@ def main():
 
     # Problem data
     costs = np.array([
-    [5, 2, 7, 3],
-    [3, 6, 6, 1],
-    [6, 1, 2, 4],
-
-    [4, 3, 6, 6]
-
+        [5, 2, 7, 3],
+        [3, 6, 6, 1],
+        [6, 1, 2, 4],
+        [4, 3, 6, 6]
     ], dtype=float)
 
     supply = np.array([80, 30, 60, 45], dtype=float)

@@ -60,8 +60,8 @@ def show(title, img):
 
 
 def main():
-    img1 = cv2.imread("../data/IMG01.jpg")
-    img2 = cv2.imread("../data/IMG02.jpg")
+    img1 = cv2.imread("../data/images/IMG01.jpg")
+    img2 = cv2.imread("../data/images/IMG02.jpg")
 
     if img1 is None or img2 is None:
         raise ValueError("No se pudieron cargar las imágenes")
